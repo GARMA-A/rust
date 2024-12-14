@@ -1,6 +1,5 @@
 fn main() {
+    let s: &'static str = "I have a static lifetime.";
 
-    let str : Result<i32 , _ >  = "25".parse();
-
-    println!("{:?}" , str) ;
+    println!("{s}");
 }

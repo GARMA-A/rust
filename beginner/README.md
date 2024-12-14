@@ -410,3 +410,205 @@ fn read_the_username() -> Result<String, io::Error>{
 ```
 
 
+### trait (interfaces in rust)
+
+
+### real example
+```rust
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+
+pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+```
+
+### another example 
+```rust
+struct Tweet {
+    username: String,
+    content: String,
+}
+
+trait Summary {
+    fn summarize(&self) -> String;
+}
+
+trait Display {
+    fn display(&self) -> String;
+}
+
+// Implement the Summary trait
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+
+// Implement the Display trait
+impl Display for Tweet {
+    fn display(&self) -> String {
+        format!("Tweet by @{}", self.username)
+    }
+}
+
+fn main() {
+    let tweet = Tweet {
+        username: String::from("garma"),
+        content: String::from("Learning Rust is fun!"),
+    };
+
+    println!("{}", tweet.summarize()); // Implements Summary
+    println!("{}", tweet.display());  // Implements Display
+}
+```
+
+
+### life times in rust
+```rust
+fn main() {
+    let r;
+
+    {
+        let x = 5;
+        r = &x;
+    }
+
+    println!("r: {r}");
+}
+// now this code will not run becuase we print r and r is refernce a non-valid 
+// memory think of it as we refernce out of bound array indexing
+```
+```error
+error[E0597]: `x` does not live long enough
+```
+
+### this is a life time problem !! 
+### rust create a new future called life time annotation that is worked for the fn's 
+
+
+### this for example wil make error at compile time
+```rust
+fn longest(x: &str, y: &str) -> &str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+```error
+error[E0106]: missing lifetime specifier
+```
+
+### the corrected code will be
+
+```rust
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+#### this tell the compiler that now there is a life time called `'a` and 
+#### x,y parameter has the same life time `'a` but actually that not the case 
+### if x has different life time from y the fn will take both and will work for 
+### the shortest life time if x it the shorter one and it go's out of scope when 
+### we return the refernce of it this is `compile time error` and the same to 
+### y parameter 
+
+
+### let's see what i was talking bout here 
+```rust
+fn main() {
+    let string1 = String::from("long string is long");
+
+    {
+        let string2 = String::from("xyz");
+        let result = longest(string1.as_str(), string2.as_str());
+        println!("The longest string is {result}");
+    }
+}
+// valid code 
+```
+### let's make small change 
+```rust
+fn main() {
+    let string1 = String::from("long string is long");
+    let result;
+    {
+        let string2 = String::from("xyz");
+        result = longest(string1.as_str(), string2.as_str()); // error under string2 
+    }
+    println!("The longest string is {result}");
+}
+// now it's not valid code
+```
+```error
+error[E0597]: `string2` does not live long enough
+```
+### the longest function will return the sortest life time in this case string2
+### compiler will see that result life time is not match the string2 life time 
+### so that the error apear
+
+## The 3 rules for the life times
+### 1. Each parameter that is a refernce  gets it's own lifetime parameter
+### 2. If there is exactly one input lifetime parameter , that life time 
+### is Assigned to all output life time parameters 
+
+### 3. if there is multiple input lifetime parameters , but one of them is 
+### &self or &mut self the lifetime of self is Assigned to all output life time parameters
+
+### this is the rules that the compiler will follow any thing out this rules you will 
+### need to manualy write them 
+
+
+### the third rule applied
+```rust
+impl<'a> ImportantExcerpt<'a> {
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention please: {announcement}");
+        self.part
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
