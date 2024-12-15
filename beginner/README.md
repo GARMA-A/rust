@@ -599,6 +599,90 @@ impl<'a> ImportantExcerpt<'a> {
 ```
 
 
+### tests in rust 
+
+
+```rust
+pub fn add(left: usize, right: usize) -> usize {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+}
+
+```
+### you have `assert_eq!()` , `assert_nq!()` , `assert!()` 
+
+
+
+### should_panic attribute
+```rust
+pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -> Guess {
+        if value < 1 || value > 100 {
+            panic!("Guess value must be between 1 and 100, got {value}.");
+        }
+
+        Guess { value }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    // you can just write #[should_panic] with no message
+    #[should_panic(expected = "less than or equal to 100")]
+    fn greater_than_100() {
+        Guess::new(200);
+    }
+}
+
+```
+### tests on rust run using `cargo test` and run in parallel
+### `cargo test -- --test-threads=1` do not run the tests on parallel
+### If we want to see printed values for passing tests as well, we can tell Rust to also show the output of successful tests with --show-output:
+### cargo test -- --show-output
+### you can also run single test by write `cargo test fn_name` 
+### or you can also run as follow `cargo test add  ` and cargo automaticly wil run all tests has a name contain `add` on it 
+
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    #[ignore]
+    fn expensive_test() {
+        // code that takes an hour to run
+    }
+}
+```
+```sh
+cargo test -- --ignored 
+```
+### this will not run any test has on it `ignore` attribute 
+
 
 
 
