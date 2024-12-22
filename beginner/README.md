@@ -683,10 +683,317 @@ cargo test -- --ignored
 ```
 ### this will not run any test has on it `ignore` attribute 
 
+## Closures In rust
+### Unlike functions, closures can capture values from 
+### the scope in which they’re defined
+
+### Closures don’t usually require you to annotate the types of the 
+### parameters or the return value like fn functions do
+
+```rust
+    let expensive_closure = |num: u32| -> u32 {
+        println!("calculating slowly...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+
+```
+### you can define the closures like that 
+
+```rust
+fn  add_one_v1   (x: u32) -> u32 { x + 1 } // fn defenition
+let add_one_v2 = |x: u32| -> u32 { x + 1 };
+let add_one_v3 = |x|             { x + 1 }; // note that here you want to use it or throw err
+let add_one_v4 = |x|               x + 1  ; // same here use or err
+```
+### The add_one_v3 and add_one_v4 lines require the closures to be 
+### evaluated to be able to compile because the types will 
+### be inferred from their usage
+
+### this code will break
+```rust
+    let example_closure = |x| x;
+
+    let s = example_closure(String::from("hello"));
+    let n = example_closure(5);
+
+```
+### Closures can capture values from their environment in three 
+### ways, which directly map to the three ways a function can take a 
+### parameter: borrowing immutably, borrowing mutably, and taking ownership
+
+### the move keyword to move the ownership of a variable used on the closure
+```rust
+    let y = String::from("Welcome");
+    let x = move || {
+        println!("{}", y); // y is moved here, and this will prevent further use of `y` in the outer scope
+    };
+    println!("{}", y); // Error: "use of moved value"
+```
+
+
+## the three traits of clousures
+
+### FnOnce applies to closures that can be called once. All closures implement at least this 
+### trait, because all closures can be called. A closure that moves captured values 
+### out of its body will only implement FnOnce and none of the other Fn traits, 
+### because it can only be called once.
+
+<hr/>
+
+### FnMut applies to closures that don’t move captured values out of their body,
+### but that might mutate the captured values. These closures can be called more 
+### than once.
+
+<hr/>
+
+### Fn applies to closures that don’t move captured values out of their body and 
+### that don’t mutate captured values, as well as closures that capture nothing from their 
+### environment. These closures can be called more than once without mutating their 
+### environment, which is important in cases such as calling a closure multiple times 
+### concurrently.
 
 
 
+## iterators in rust
 
+
+```rust
+    let v1 = vec![1, 2, 3];
+    let v1_iter = v1.iter();
+
+    for val in v1_iter { // take the ownership here 
+        println!("Got: {val}");
+    }
+    println!("{:?}", v1_iter); // error borrow moved value
+
+```
+### iteratiors pass test
+
+```rust
+    #[test]
+    fn iterator_demonstration() {
+        let v1 = vec![1, 2, 3];
+
+        let mut v1_iter = v1.iter();
+
+        assert_eq!(v1_iter.next(), Some(&1)); // pass
+        assert_eq!(v1_iter.next(), Some(&2)); // pass
+        assert_eq!(v1_iter.next(), Some(&3)); // pass 
+        assert_eq!(v1_iter.next(), None);  // pass
+    }
+
+```
+### convert from iteratior to normal collection
+```rust
+        let v1: Vec<i32> = vec![1, 2, 3];
+        let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+```
+### smart pointers in rust
+
+### rules : smart pointers are referenses like noraml pointers but also 
+### are struct's  implement Deref , Drop trait and have extra data
+### smart pointers in rust own the data that are refered to there is no borrow
+
+## most important smart pointers
+### Box<T> for allocating values on the heap
+### Rc<T>, a reference counting type that enables multiple ownership
+### Ref<T> and RefMut<T>, accessed through RefCell<T>, 
+### a type that enforces the borrowing rules at runtime instead of compile time
+
+## the Box smart pointer 
+### box smart pointer allow us to allocate data on the heap
+```rust
+fn main() {
+    let b = Box::new(5);
+    println!("b = {b}");
+}
+```
+## the deref trait
+### make you able to dereference the pointer to get the value `*x`
+
+```rust
+use std::ops::Deref;
+
+struct MyBox<T>(T);
+
+impl<T> MyBox<T> {
+    fn new(x: T) -> MyBox<T> {
+        MyBox(x)
+    }
+}
+
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+fn main() {
+    let x = 5;
+    let y = MyBox::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y); // withput deref impl block you cannot derefernce MyBox
+}
+
+```
+
+
+## the drop trait
+
+```rust
+#[derive(Debug)]
+struct  MySmartPointer {
+    data :String
+}
+
+impl Drop for MySmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`" , self.data );
+    }
+}
+
+fn main() {
+    let c = MySmartPointer{
+        data : String::from("Some staff")
+    };
+
+    let d = MySmartPointer{
+        data : String::from("another staff")
+    };
+    println!("c = {:?} ,  d = {:?}  \ncreated!", c , d);
+}
+// the output of this code 
+// c = MySmartPointer { data: "Some staff" } ,  d = MySmartPointer { data: "another staff" }
+// created!
+// Dropping CustomSmartPointer with data `another staff`
+// Dropping CustomSmartPointer with data `Some staff`
+
+```
+### you cannot call manualy a drop method but if you want to drop 
+### something early you can use the `std::mem::drop`
+
+```rust
+use std::mem::drop;
+#[derive(Debug)]
+struct  MySmartPointer {
+    data :String
+}
+
+impl Drop for MySmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`" , self.data );
+    }
+}
+
+fn main() {
+    let c = MySmartPointer{
+        data : String::from("Some staff")
+    };
+    drop(c);
+    let d = MySmartPointer{
+        data : String::from("another staff")
+    };
+    println!("d = {:?}  \ncreated", d); // if you try to use c here you will get error
+}
+
+// the output of this code 
+// Dropping CustomSmartPointer with data `Some staff`
+// d = MySmartPointer { data: "another staff" }
+// created
+// Dropping CustomSmartPointer with data `another staff`
+```
+
+## the Rc smart Poiter
+### Imagine Rc<T> as a TV in a family room. When one person enters 
+### to watch TV, they turn it on. Others can come into the room and watch the 
+### TV. When the last person leaves the room, they turn off the 
+### TV because it’s no longer being used. If someone turns off the 
+### TV while others are still watching it, there would be uproar from 
+### the remaining TV watchers!
+
+## example without the Rc
+```rust
+enum List {
+    Cons(i32, Box<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() {
+    let a = Cons(5, Box::new(Cons(10, Box::new(Nil)))); // value created here
+    let b = Cons(3, Box::new(a));// a moved the ownership to b now
+    let c = Cons(4, Box::new(a)); // try to use the moved value a (error)
+}
+
+```
+### we’ll change our definition of List to use Rc<T>
+### in place of Box<T>, as shown in Listing 
+### Each Cons variant will now hold a value and an Rc<T>
+### pointing to a List. When we create b, instead of taking ownership 
+### of a, we’ll clone the Rc<List> that a is holding, thereby increasing 
+### the number of references from one to two and letting a and b 
+### share ownership of the data in that Rc<List>. 
+### We’ll also clone a when creating c, increasing the number 
+### of references from two to three. Every time we call Rc::clone, 
+### the reference count to the data within the Rc<List> will increase, 
+### and the data won’t be cleaned up unless there are zero references to it
+
+
+```rust
+enum List {
+    Cons(i32, Rc<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    let b = Cons(3, Rc::clone(&a));
+    let c = Cons(4, Rc::clone(&a));
+}
+
+```
+
+
+<img src="RcSmartPointer.png" alt="My Profile Img" width="400" height="200" />
+
+### We could have called a.clone() rather than Rc::clone(&a), 
+### but Rust’s convention is to use Rc::clone in this case. 
+### The implementation of Rc::clone doesn’t make a deep copy 
+### of all the data like most types’ implementations of clone do. 
+### The call to Rc::clone only increments the reference count, which doesn't
+### take much time. Deep copies of data can take a lot of time. 
+### By using Rc::clone for reference counting, we can visually distinguish between the 
+### deep-copy kinds of clones and the kinds of clones that increase the 
+### reference count. When looking for performance problems in the code
+### , we only need to consider the deep-copy clones and can disregard calls to Rc::clone.
+
+
+```rust
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    println!("count after creating a = {}", Rc::strong_count(&a));
+    let b = Cons(3, Rc::clone(&a));
+    println!("count after creating b = {}", Rc::strong_count(&a));
+    {
+        let c = Cons(4, Rc::clone(&a));
+        println!("count after creating c = {}", Rc::strong_count(&a));
+    }
+    println!("count after c goes out of scope = {}", Rc::strong_count(&a));
+}
+// output of the code 
+// count after creating a = 1
+// count after creating b = 2
+// count after creating c = 3
+// count after c goes out of scope = 2
+```
 
 
 
