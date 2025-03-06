@@ -50,7 +50,7 @@
 
 ```rust
     let mut x: i32 = 0;
-    loop
+    loop{
         x += 1;
         println!("{}", x); // 1 2 3 4 5 7 8 9 10
         if x == 10 {
@@ -1177,16 +1177,23 @@ fn main() {
 
 ## Rc<t> vs Box<T> vs RefCell<T>
 
-### Rc<T> enables multiple owners of the same data;
+### Box<T> is simply store the data on the heap and provide pointer to it 
+### any thing else is the same with the rules of rust
 
-### Box<T> and RefCell<T> have single owners.
+<hr/>
 
-### Box<T> allows immutable or mutable borrows checked at compile time;
+### Rc<T> just allow T to have multiple immutable owners at the same time every thing else is the same
 
-### Rc<T> allows only immutable borrows checked at compile time;
+<hr/>
 
-### RefCell<T> allows immutable or mutable borrows checked at runtime.
+### RefCell<T> just move all the barowing rules to runtime allow you to have multiple mutable refs 
 
-### Because RefCell<T> allows mutable borrows checked at runtime,
 
-### you can mutate the value inside the RefCell<T> even when the RefCell<T> is immutable.
+## very very important two trits to remember
+
+### `Send` : means that ownership of a value can be transferred to another thread
+### `Sync` : means that references to a value can be safely shared between multiple threads
+
+### **`Arc<T>`** is Send, so you can pass it to a thread
+### **`Arc<T>`** is also Sync, so multiple threads can hold &Arc<T> safely.
+
