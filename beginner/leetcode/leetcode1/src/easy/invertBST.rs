@@ -19,16 +19,3 @@ impl TreeNode {
   }
 }
 
-
-impl Solution {
-    pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
-
-        
-
-
-       
-       
-
-        
-    }
-}
