@@ -2,3 +2,8 @@ pub mod KokoEatingBananas;
 pub mod evalRPN;
 pub mod reorderList;
 pub mod TopKFrequentElements;
+pub mod subsets;
+pub mod Permutations;
+pub mod DailyTemperatures;
+pub mod EncodeDecode;
+pub mod PermutationinString;
