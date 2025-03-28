@@ -11,3 +11,4 @@ pub mod subsets;
 pub mod jumpGame;
 pub mod jumpGame2;
 pub mod DFSandBFS;
+pub mod numbetOfIslands;
