@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub fn dailyTemperatures(temps: Vec<i32>) -> Vec<i32> {
     let (mut ans, mut stack) = (vec![0; temps.len()], Vec::<usize>::new());
     for i in 0..temps.len() {
