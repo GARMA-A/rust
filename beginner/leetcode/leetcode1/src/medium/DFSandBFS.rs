@@ -1,4 +1,3 @@
-#![allow(dead_code, unused_variables, non_snake_case)]
 use std::collections::{HashMap, VecDeque};
 pub struct Graph {
     pub adj_list: HashMap<char, Vec<char>>,
