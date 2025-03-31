@@ -1,3 +1,5 @@
+#![allow(unused)]
+use std::io::Read;
 pub struct MachineResources {
     pub water: i8,
     pub milk: i8,
@@ -59,21 +61,34 @@ impl MachineResources {
         println!("----------------------------------------------------");
         println!("Please select an option:");
         std::io::stdin().read_line(&mut input)?;
-        match input.trim() {
-            "l" => {
+
+        let input = input.as_bytes();
+        if input.len() > 2 {
+            println!("Please enter only one character");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "Invalid selection",
+            ));
+        }
+        match input[0].to_ascii_lowercase() as char {
+            'l' => {
+                crate::clear_screen();
                 println!("You have selected a late");
                 return Ok('l');
             }
-            "c" => {
+            'c' => {
+                crate::clear_screen();
                 println!("You have selected a cappuccino");
                 return Ok('c');
             }
-            "e" => {
+            'e' => {
+                crate::clear_screen();
                 println!("You have selected a espresso");
                 return Ok('e');
             }
             _ => {
-                println!("Invalid selection");
+                crate::clear_screen();
+                println!("your enter is not 'l' , 'c' , 'e' please enter these characters");
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::InvalidInput,
                     "Invalid selection",

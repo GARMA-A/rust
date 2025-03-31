@@ -1,12 +1,23 @@
-#![allow(dead_code)]
+use std::process::exit;
 
-use crate::display;
+use crate::coffee_machine;
 
 pub struct UserInputOfMoney {
     pub quarter_number: i8,
     pub dime_number: i8,
     pub nickel_number: i8,
     pub penny_number: i8,
+}
+
+impl Default for UserInputOfMoney {
+    fn default() -> Self {
+        UserInputOfMoney {
+            quarter_number: 0,
+            dime_number: 0,
+            nickel_number: 0,
+            penny_number: 0,
+        }
+    }
 }
 
 impl UserInputOfMoney {
@@ -30,20 +41,24 @@ impl UserInputOfMoney {
         std::io::stdin().read_line(&mut input)?;
         let quarter_number: i8 = input.trim().parse()?;
         input.clear();
+        crate::clear_screen();
 
         println!("Enter the number of dimes you have: ");
         std::io::stdin().read_line(&mut input)?;
         let dime_number: i8 = input.trim().parse()?;
         input.clear();
+        crate::clear_screen();
 
         println!("Enter the number of nickels you have: ");
         std::io::stdin().read_line(&mut input)?;
         let nickel_number: i8 = input.trim().parse()?;
         input.clear();
+        crate::clear_screen();
 
         println!("Enter the number of pennies you have: ");
         std::io::stdin().read_line(&mut input)?;
         let penny_number: i8 = input.trim().parse().expect("Please enter a number");
+        crate::clear_screen();
 
         Ok(UserInputOfMoney::new(
             quarter_number,
@@ -67,7 +82,8 @@ impl UserInputOfMoney {
         total_money
     }
 
-    pub fn buy_late(machine_resources: &display::MachineResources, total_money: f32) {
+    pub fn buy_late(machine_resources: &coffee_machine::MachineResources, total_money: f32) {
+        crate::clear_screen();
         if total_money >= machine_resources.late_price {
             println!("the late will be ready soon.....");
             let remaining_money = total_money - machine_resources.late_price;
@@ -77,7 +93,8 @@ impl UserInputOfMoney {
         }
     }
 
-    pub fn buy_cappuccino(machine_resources: &display::MachineResources, total_money: f32) {
+    pub fn buy_cappuccino(machine_resources: &coffee_machine::MachineResources, total_money: f32) {
+        crate::clear_screen();
         if total_money >= machine_resources.cappuccino_price {
             println!("the capuccino will be ready soon.....");
             let remaining_money = total_money - machine_resources.cappuccino_price;
@@ -87,7 +104,8 @@ impl UserInputOfMoney {
         }
     }
 
-    pub fn buy_espresso(machine_resources: &display::MachineResources, total_money: f32) {
+    pub fn buy_espresso(machine_resources: &coffee_machine::MachineResources, total_money: f32) {
+        crate::clear_screen();
         if total_money >= machine_resources.espresso_price {
             println!("the espresso will be ready soon.....");
             let remaining_money = total_money - machine_resources.espresso_price;
