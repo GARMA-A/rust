@@ -49,13 +49,13 @@ impl UserInputOfMoney {
         input.clear();
         crate::clear_screen();
 
-        println!("Enter the number of nickels you have: ");
+        println!("Enter the number of nickels you have");
         std::io::stdin().read_line(&mut input)?;
         let nickel_number: i8 = input.trim().parse()?;
         input.clear();
         crate::clear_screen();
 
-        println!("Enter the number of pennies you have: ");
+        println!("enter the number of quartes you have");
         std::io::stdin().read_line(&mut input)?;
         let penny_number: i8 = input.trim().parse().expect("Please enter a number");
         crate::clear_screen();

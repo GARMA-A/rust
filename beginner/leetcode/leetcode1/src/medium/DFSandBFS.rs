@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::collections::{HashMap, VecDeque};
 pub struct Graph {
     pub adj_list: HashMap<char, Vec<char>>,
@@ -85,19 +86,6 @@ impl Graph {
     }
 
     pub fn dfs(&self, curNode: char) {
-        let mut visited: HashMap<char, bool> = HashMap::new();
-        self.dfs_helper(curNode, &mut visited);
-    }
-
-    pub fn dfs_helper(&self, curNode: char, visited: &mut HashMap<char, bool>) {
-        if let Some(nodes) = self.adj_list.get(&curNode) {
-            visited.insert(curNode, true);
-            print!("{} ", curNode);
-            for &node in nodes {
-                if !*visited.entry(node).or_insert(false) {
-                    self.dfs_helper(node, visited);
-                }
-            }
-        }
+        let visited: HashMap<char, bool> = HashMap::new();
     }
 }

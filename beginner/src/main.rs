@@ -1,4 +1,4 @@
 fn main() {
-
-       println!("welcome to the rust ");
+    println!("welcome to the rust ");
 }
+

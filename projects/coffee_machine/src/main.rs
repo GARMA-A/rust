@@ -1,5 +1,5 @@
 #![allow(unused)]
-use std::{intrinsics::breakpoint, process::Command};
+use std::process::Command;
 
 pub fn clear_screen() {
     if cfg!(target_os = "windows") {
@@ -11,9 +11,8 @@ pub fn clear_screen() {
 
 use user_functions::UserInputOfMoney;
 
-mod coffee_machine;
+mod coffee_machine; // module
 mod user_functions;
-
 fn main() {
     'system_start: loop {
         let machine_resources =

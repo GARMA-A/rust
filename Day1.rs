@@ -3,5 +3,5 @@ struct Day1 {
 }
 
 pub fn main() -> () {
-    println!("Day 1");
+    let vec: Vec<i32> = Vec::new();
 }
