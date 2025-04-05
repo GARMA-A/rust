@@ -1,5 +1,5 @@
 #[allow(dead_code, unused_variables, non_snake_case)]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TreeNode {
     pub val: i32,
     pub left: Option<Rc<RefCell<TreeNode>>>,
@@ -18,21 +18,28 @@ impl TreeNode {
 }
 
 use std::cell::RefCell;
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 use std::rc::Rc;
 
 pub struct Solution;
 
 impl Solution {
     pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
-        let mut ans: Vec<Vec<i32>> = vec![vec![]];
-        let mut queue: VecDeque<i32> = VecDeque::new();
-        if let Some(node) = root {
-            queue.push_back(node.borrow().val);
-            ans.push(vec![node.borrow().val]);
-        }
+        let mut ans: Vec<Vec<i32>> = vec![];
+        Self::dfs(&root, 0, &mut ans);
 
-        while let Some(node) = queue.remove(0) {}
         ans
+    }
+
+    pub fn dfs(root: &Option<Rc<RefCell<TreeNode>>>, index: usize, ans: &mut Vec<Vec<i32>>) {
+        if let Some(node) = root {
+            if index == ans.len() {
+                ans.push(vec![]);
+            }
+
+            ans[index].push(node.borrow().val);
+            Self::dfs(&node.borrow().left, index + 1, ans);
+            Self::dfs(&node.borrow().right, index + 1, ans);
+        }
     }
 }

@@ -6,3 +6,4 @@ pub mod NumberofOneBits;
 pub mod DiameterofBinaryTree;
 pub mod ClimbingStairs;
 pub mod MinCostClimbingStairs;
+pub mod PlusOne;
