@@ -23,3 +23,6 @@ pub mod numberOfIslands;
 pub mod reorderList;
 pub mod subsets;
 pub mod CloneGraph;
+pub mod Pow;
+pub mod KClosestPointstoOrigin;
+pub mod KthLargestElementinanArray;

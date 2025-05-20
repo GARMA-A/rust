@@ -1,6 +1,8 @@
 pub mod ClimbingStairs;
 pub mod DiameterofBinaryTree;
 pub mod HappyNumber;
+pub mod KthLargestElementinaStream;
+pub mod LastStoneWeight;
 pub mod MinCostClimbingStairs;
 pub mod NumberofOneBits;
 pub mod PlusOne;

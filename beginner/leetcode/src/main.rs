@@ -3,13 +3,17 @@ mod hard;
 mod medium;
 
 fn main() {
-    let mut arr: Vec<i32> = vec![4, 1, 2, 6, 5, 3];
-    let mut arr2 = vec![4, 1, 2, 6, 5, 3];
-    let sort = easy::sorting::Sorting::new();
-    println!(
-        "{:?} \n {:?} => {:?}",
-        sort.MergeSort(&mut arr),
-        sort.quick_sort(&mut arr2, 0, 5),
-        arr2
+    let arr = vec![
+        vec![2, 3],
+        vec![5, 6],
+        vec![1, 2],
+        vec![6, 7],
+        vec![100, -100],
+        vec![20, 30],
+        vec![10, 5],
+    ];
+    print!(
+        "{:?}",
+        medium::KClosestPointstoOrigin::Solution::k_closest(arr, 3)
     );
 }
